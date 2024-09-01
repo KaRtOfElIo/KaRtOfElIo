@@ -1,20 +1,25 @@
+import time
 from selenium import webdriver
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.common.by import By
-from selenium.webdriver.firefox.service import Service
 
-# Указываем путь к драйверу Firefox (GeckoDriver)
-service = Service(executable_path="путь_к_драйверу/geckodriver")
-driver = webdriver.Firefox(service=service)
+driver = webdriver.Chrome()
 
 try:
-    driver.get("http://the-internet.herokuapp.com/add_remove_elements/")
     
-    for _ in range(5):
-        add_button = driver.find_element(By.XPATH, '//button[text()="Add Element"]')
-        add_button.click()
-    
-    delete_buttons = driver.find_elements(By.CLASS_NAME, 'added-manually')
-    print(f"Количество кнопок 'Delete': {len(delete_buttons)}")
+    driver.get("http://the-internet.herokuapp.com/entry_ad")
+    wait = WebDriverWait(driver, 10)
+    modal_window = wait.until(
+        EC.visibility_of_element_located((By.CSS_SELECTOR, ".modal"))
+    )
+    close_button = wait.until(EC.element_to_be_clickable(
+        (By.CSS_SELECTOR, ".modal-footer")))
+    time.sleep(3)
+    close_button.click()
+    time.sleep(2)
 
+except Exception as ex:
+    print(ex)
 finally:
     driver.quit()
